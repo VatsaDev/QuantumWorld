@@ -1,0 +1,94 @@
+<html>
+  <head>
+    <title>Sandbox</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.52.0/dist/phaser.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="shortcut icon" href="assets/gluonIcon.png" type="image/x-icon">
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Work+Sans&display=swap");
+
+      body {
+        font-family: "Work Sans", sans-serif;
+      }
+      #game {
+        width: 100%;
+        height: 100%;
+      }
+
+      #getbar {
+        position: absolute;
+        top: 8%;
+        left: 10px;
+        width: 100px;
+        height: 80%;
+        background-color: #121212;
+        color: #cac4c4;
+        border-radius: 10px;
+        padding: 10px;
+        overflow: auto;
+      }
+
+      .slot {
+        width: 80px;
+        height: 80px;
+        background-color: #242424;
+        margin: 5px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        padding: 5px;
+        border-radius: 10px;
+        text-decoration: underline;
+      }
+
+      #mini {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 15px;
+        height: 15px;
+        padding: 5px;
+        border-radius: 10px;
+        background: #cac4c4;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game" style="text-align: center"></div>
+    <script type="module" src="src/main.js"></script>
+
+    <!--UI-->
+    <div id="mini">X</div>
+    <div id="getbar">
+      <div class="slot" id="gluons">
+        gluons
+        <br><br>
+        <img src="assets/gluon.png" />
+      </div>
+      <div class="slot" id="electrons">electrons<br><br><img src="assets/electron.png" /></div>
+      <div class="slot" id="upQuark">Up Quarks<br><br><img src="assets/quarks/upQuark.png" /></div>
+      <div class="slot" id="downQuark">
+        Down Quarks<br><br><img src="assets/quarks/downQuark.png" />
+      </div>
+      <div class="slot" id="charmQuark">
+        Charm Quarks<br><br><img src="assets/quarks/charmQuark.png" />
+      </div>
+      <div class="slot" id="strangeQuark">
+        Strange Quarks<br><br><img src="assets/quarks/strangeQuark.png" />
+      </div>
+      <div class="slot" id="topQuark">Top Quarks<br><br><img src="assets/quarks/topQuark.png" /></div>
+      <div class="slot" id="bottomQuark">
+        Bottom Quarks<br><br><img src="assets/quarks/bottomQuark.png" />
+      </div>
+      <div class="slot" id="neutrons">Neutrons<br><br><img src="assets/neutron.png" /></div>
+      <div class="slot" id="protons">Protons<br><br><img src="assets/proton.png" /></div>
+      <div class="slot" id="photons">Photons<br><br><img src="assets/photon.png" /></div>
+    </div>
+  </body>
+</html>
