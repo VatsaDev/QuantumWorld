@@ -489,13 +489,13 @@ export default class Game extends Phaser.Scene {
                             this.physics.overlap(p5, p6) &&
                             this.physics.overlap(p6, p1)
                           ) {
-                            /*this.protons.create(p1.x, p1.y, "proton");
+                            this.protons.create(p1.x, p1.y, "proton");
                             p1.destroy();
                             p2.destroy();
                             p3.destroy();
                             p4.destroy();
                             p5.destroy();
-                            p6.destroy();*/
+                            p6.destroy();
                           }
                         }, this);
                       }
@@ -533,13 +533,13 @@ export default class Game extends Phaser.Scene {
                             this.physics.overlap(p5, p6) &&
                             this.physics.overlap(p6, p1)
                           ) {
-                            /*this.neutrons.create(p1.x, p1.y, "neutron");
+                            this.neutrons.create(p1.x, p1.y, "neutron");
                             p1.destroy();
                             p2.destroy();
                             p3.destroy();
                             p4.destroy();
                             p5.destroy();
-                            p6.destroy();*/
+                            p6.destroy();
                           }
                         }, this);
                       }
