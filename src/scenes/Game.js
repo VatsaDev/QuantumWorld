@@ -22,6 +22,9 @@ export default class Game extends Phaser.Scene {
     this.load.image("circle", "assets/circle.png");
     this.load.image("proton", "assets/proton.png");
     this.load.image("neutron", "assets/neutron.png");
+    this.load.image("boson", "assets/boson.png");
+    this.load.image("muon", "assets/muon.png");
+    this.load.image("tau", "assets/tau.png");
   }
 
   create() {
@@ -129,6 +132,26 @@ export default class Game extends Phaser.Scene {
       repeat: -1,
       setXY: { x: -50, y: -50, stepX: 200, stepY: 20 },
     });
+    this.bosons = this.physics.add.group({
+      key: "boson",
+      allowGravity: false,
+      repeat: -1,
+      setXY: { x: 1500, y: -50, stepX: 200, stepY: 20 },
+    });
+    this.muons = this.physics.add.group({
+      classType: Muon,
+      key: "muon",
+      allowGravity: true,
+      repeat: -1,
+      setXY: { x: 1600, y: -50, stepX: 200, stepY: 20 },
+    });
+    this.taus = this.physics.add.group({
+      classType: Tau,
+      key: "tau",
+      allowGravity: true,
+      repeat: -1,
+      setXY: { x: 1700, y: -50, stepX: 200, stepY: 20 },
+    });
 
     this.input.on("drag", (pointer) => {
       if (this.selected) {
@@ -186,6 +209,18 @@ export default class Game extends Phaser.Scene {
       let newAngle = new Phaser.Math.Vector2(p1.body.velocity).angle();
       p1.setRotation(newAngle);
     });
+    this.physics.add.collider(this.photons, this.bosons, (p1, p2) => {
+      let newAngle = new Phaser.Math.Vector2(p1.body.velocity).angle();
+      p1.setRotation(newAngle);
+    });
+    this.physics.add.collider(this.photons, this.muons, (p1, p2) => {
+      let newAngle = new Phaser.Math.Vector2(p1.body.velocity).angle();
+      p1.setRotation(newAngle);
+    });
+    this.physics.add.collider(this.photons, this.taus, (p1, p2) => {
+      let newAngle = new Phaser.Math.Vector2(p1.body.velocity).angle();
+      p1.setRotation(newAngle);
+    });
     this.physics.add.collider([
       this.photons,
       this.bottomQuarks,
@@ -195,8 +230,43 @@ export default class Game extends Phaser.Scene {
       this.topQuarks,
       this.upQuarks,
       this.protons,
-      this.neutrons
+      this.neutrons,
+      this.muons,
+      this.tau
     ]);
+
+    let g = this.make.graphics({add:false});
+
+    g.fillStyle(0xffffff)
+    g.fillCircle(4,4,4);
+    g.generateTexture('poof', 8, 8)
+    this.particles = this.add.particles('poof');
+
+    //boson to quark
+    this.physics.add.collider(this.bosons, this.bottomQuarks, (p1, p2) => {
+      this.flavorChange(p2.x,p2.y)
+      p2.destroy()
+    });
+    this.physics.add.collider(this.bosons, this.charmQuarks, (p1, p2) => {
+      this.flavorChange(p2.x,p2.y)
+      p2.destroy()
+    });
+    this.physics.add.collider(this.bosons, this.downQuarks, (p1, p2) => {
+      this.flavorChange(p2.x,p2.y)
+      p2.destroy()
+    });
+    this.physics.add.collider(this.bosons, this.strangeQuarks, (p1, p2) => {
+      this.flavorChange(p2.x,p2.y)
+      p2.destroy()
+    });
+    this.physics.add.collider(this.bosons, this.topQuarks, (p1, p2) => {
+      this.flavorChange(p2.x,p2.y)
+      p2.destroy()
+    });
+    this.physics.add.collider(this.bosons, this.upQuarks, (p1, p2) => {
+      this.flavorChange(p2.x,p2.y)
+      p2.destroy()
+    });
 
     this.input.on(
       "pointermove",
@@ -263,6 +333,13 @@ export default class Game extends Phaser.Scene {
       );
     }, this);
 
+    this.bosons.children.iterate(function (child) {
+      child.setVelocity(
+        Phaser.Math.Between(-30, 30),
+        Phaser.Math.Between(-30, 30)
+      );
+    }, this);
+
     this.neutrons.children.iterate(function (child) {
       child.body.bounce.set(1);
       child.body.collideWorldBounds = true;
@@ -286,6 +363,42 @@ export default class Game extends Phaser.Scene {
         this.selected.setVelocity(0, 0);
       });
       
+    }, this);
+
+    this.bosons.children.iterate(function (child) {
+      child.body.bounce.set(1);
+      child.body.collideWorldBounds = true;
+      child.body.onWorldBounds = true;
+      child.setInteractive({ draggable: true });
+
+      child.on("pointerdown", () => {
+        this.selected = child;
+        this.selected.setVelocity(0, 0);
+      });
+    }, this);
+
+    this.muons.children.iterate(function (child) {
+      child.body.bounce.set(1);
+      child.body.collideWorldBounds = true;
+      child.body.onWorldBounds = true;
+      child.setInteractive({ draggable: true });
+
+      child.on("pointerdown", () => {
+        this.selected = child;
+        this.selected.setVelocity(0, 0);
+      });
+    }, this);
+
+    this.taus.children.iterate(function (child) {
+      child.body.bounce.set(1);
+      child.body.collideWorldBounds = true;
+      child.body.onWorldBounds = true;
+      child.setInteractive({ draggable: true });
+
+      child.on("pointerdown", () => {
+        this.selected = child;
+        this.selected.setVelocity(0, 0);
+      });
     }, this);
 
     this.photons.children.iterate(function (child) {
@@ -417,6 +530,36 @@ export default class Game extends Phaser.Scene {
         );
       }.bind(this)
     );
+    document.querySelector("#bosons").addEventListener(
+      "click",
+      function (pointer) {
+        this.bosons.create(
+          Phaser.Math.Between(0, 1000),
+          Phaser.Math.Between(0, 1000),
+          "boson"
+        );
+      }.bind(this)
+    );
+    document.querySelector("#muons").addEventListener(
+      "click",
+      function (pointer) {
+        this.muons.create(
+          Phaser.Math.Between(0, 1000),
+          Phaser.Math.Between(0, 1000),
+          "muon"
+        );
+      }.bind(this)
+    );
+    document.querySelector("#taus").addEventListener(
+      "click",
+      function (pointer) {
+        this.taus.create(
+          Phaser.Math.Between(0, 1000),
+          Phaser.Math.Between(0, 1000),
+          "tau"
+        );
+      }.bind(this)
+    );
 
     document.getElementById("getbar").style.visibility = "visible";
 
@@ -462,6 +605,15 @@ export default class Game extends Phaser.Scene {
       p2.setVelocity(0, 0);
     });
     this.physics.add.overlap(this.circle, this.neutrons, (p1, p2) => {
+      p2.setVelocity(0, 0);
+    });
+    this.physics.add.overlap(this.circle, this.bosons, (p1, p2) => {
+      p2.setVelocity(0, 0);
+    });
+    this.physics.add.overlap(this.circle, this.muons, (p1, p2) => {
+      p2.setVelocity(0, 0);
+    });
+    this.physics.add.overlap(this.circle, this.taus, (p1, p2) => {
       p2.setVelocity(0, 0);
     });
 
@@ -685,5 +837,130 @@ export default class Game extends Phaser.Scene {
       });
     }, this);
 
+    this.bosons.children.iterate(function (child) {
+      child.body.bounce.set(1);
+      child.body.collideWorldBounds = true;
+      child.body.onWorldBounds = true;
+      child.setInteractive({ draggable: true });
+
+      child.on("pointerdown", () => {
+        this.selected = child;
+        this.selected.setVelocity(0, 0);
+      });
+    }, this);
+
+    this.muons.children.iterate(function (child) {
+      child.body.bounce.set(1);
+      child.body.collideWorldBounds = true;
+      child.body.onWorldBounds = true;
+      child.setInteractive({ draggable: true });
+
+      child.on("pointerdown", () => {
+        this.selected = child;
+        this.selected.setVelocity(0, 0);
+      });
+    }, this);
+
+    this.taus.children.iterate(function (child) {
+      child.body.bounce.set(1);
+      child.body.collideWorldBounds = true;
+      child.body.onWorldBounds = true;
+      child.setInteractive({ draggable: true });
+
+      child.on("pointerdown", () => {
+        this.selected = child;
+        this.selected.setVelocity(0, 0);
+      });
+    }, this);
+
+  }
+
+  flavorChange(x,y){
+    this.quarks = ["up","down","top","bottom","strange","charm"]
+    this.quarkChoice = this.quarks[Math.floor(Math.random() * this.quarks.length)];
+    if(this.quarkChoice == "up"){
+      this.upQuarks.create(x,y,"upQuark")
+      return;
+    }if(this.quarkChoice == "down"){
+      this.downQuarks.create(x,y,"downQuark")
+      return;
+    }if(this.quarkChoice == "top"){
+      this.topQuarks.create(x,y,"topQuark")
+      return;
+    }if(this.quarkChoice == "bottom"){
+      this.bottomQuarks.create(x,y,"bottomQuark")
+      return;
+    }if(this.quarkChoice == "strange"){
+      this.strangeQuarks.create(x,y,"strangeQuark")
+      return;
+    }if(this.quarkChoice == "charm"){
+      this.charmQuarks.create(x,y,"charmQuark")
+      return;
+    }
+  }
+}
+
+//Muon, Tau classes
+class Muon extends Phaser.Physics.Arcade.Sprite {
+
+  constructor (scene, x, y) {
+      super(scene, x, y, "muon");
+
+      let timedelay = 3000; // 3 seconds
+      scene.time.delayedCall(timedelay, this.decay, null, this); 
+      this.src = scene
+  }
+  
+  decay() {
+      this.destroy();
+      this.emitter = this.src.particles.createEmitter({
+        tint: 0xffffff,
+        alpha: { start: 1, end: 0 },
+        scale: { start: 0.5, end: 1.5 },
+        speed: {random: [20, 100] },
+        accelerationY:  {random: [-300, 300] },
+        rotate: { min: -180, max: 180 },
+        lifespan: { min: 300, max: 1000 },
+        frequency: 20,
+        maxParticles: 20,
+        x: this.x,
+        y: this.y
+    });
+    setTimeout(()=> this.emitter.stop(), 500);
+      this.src.electrons.create(this.x,this.y,"electron")
+      this.src.electrons.create(this.x,this.y,"electron")
+      this.src.electrons.create(this.x,this.y,"electron")
+  }
+}
+
+class Tau extends Phaser.Physics.Arcade.Sprite {
+
+  constructor (scene, x, y) {
+      super(scene, x, y, "tau");
+
+      let timedelay = 1500; // 1.5 seconds
+      scene.time.delayedCall(timedelay, this.decay, null, this); 
+      this.src = scene
+  }
+  
+  decay() {
+      this.destroy();
+      this.emitter = this.src.particles.createEmitter({
+        tint: 0xffffff,
+        alpha: { start: 1, end: 0 },
+        scale: { start: 0.5, end: 1.5 },
+        speed: {random: [20, 100] },
+        accelerationY:  {random: [-300, 300] },
+        rotate: { min: -180, max: 180 },
+        lifespan: { min: 300, max: 1000 },
+        frequency: 20,
+        maxParticles: 20,
+        x: this.x,
+        y: this.y
+    });
+    setTimeout(()=> this.emitter.stop(), 500);
+      this.src.electrons.create(this.x,this.y,"electron")
+      this.src.muons.create(this.x,this.y,"muon")
+      this.src.muons.create(this.x,this.y,"muon")
   }
 }
